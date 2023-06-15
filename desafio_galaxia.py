@@ -10,9 +10,9 @@ from funciones import reiniciar_listas
 from funciones import crear_lista_naves_enemigas
 from funciones import crear_sonido
 from funciones import mostrar_texto
-from funciones import eventos_inicio
-from funciones import eventos_score
 from funciones import eventos_nivel
+from funciones import galaxia_menu
+from funciones import galaxia_scores
 from base_datos import *
 
 pygame.init()
@@ -76,31 +76,12 @@ while flag_correr:
     lista_eventos = pygame.event.get()
     pantalla.blit(imagen_galaxia, imagen_galaxia.get_rect())
     if JUGANDO == 0:
-        pantalla.blit(imagen_jugar, rect_boton)
-        pantalla.blit(imagen_puntaje, rect_boton_puntos)
-        pygame.display.flip()
-
-        flag_correr, JUGANDO, ingreso = eventos_inicio(lista_eventos, rect_boton, rect_boton_puntos, 
-                                                       ingreso, flag_correr, JUGANDO)
-        
-        pygame.draw.rect(pantalla, colores.BLACK, ingreso_rect, 2)
-        font_input_surface = font_input.render(ingreso, True, colores.BLACK)
-        pantalla.blit(font_input_surface,(ingreso_rect.x+5, ingreso_rect.y+5))
+        flag_correr, ingreso, JUGANDO = galaxia_menu(pantalla, flag_correr, imagen_jugar, rect_boton, 
+                                                    imagen_puntaje, rect_boton_puntos,lista_eventos, 
+                                                    ingreso_rect, font_input, ingreso, JUGANDO)
     
     elif JUGANDO == 2:
-        pantalla.blit(imagen_volver, rect_boton_volver)
-
-        flag_correr, JUGANDO = eventos_score(lista_eventos, flag_correr, rect_boton_volver, JUGANDO)
-        
-        # Mostrar titulos
-        mostrar_texto(24, "NOMBRE", colores.BLACK, pantalla, LEFT_TEXTO, TOP_TEXTO-25)
-        mostrar_texto(24, "PUNTAJE", colores.BLACK, pantalla, LEFT_TEXTO*2, TOP_TEXTO-25)
-
-        puntaje = obtener_puntajes_bd()
-        # Mostrar nombres y puntajes
-        for i in range(len(puntaje)):
-            mostrar_texto(24, puntaje[i][1], colores.BLACK, pantalla, LEFT_TEXTO, TOP_TEXTO+(i*25))
-            mostrar_texto(24, str(puntaje[i][2]), colores.BLACK, pantalla, LEFT_TEXTO*2, TOP_TEXTO+(i*25))
+        flag_correr, JUGANDO = galaxia_scores(pantalla, imagen_volver, rect_boton_volver, lista_eventos, flag_correr, JUGANDO)
         
     elif JUGANDO == 1:
         flag_correr, SEGUNDOS = eventos_nivel(lista_eventos, flag_correr, timer_uno, lista_naves_enemigas, timer_segundos, 

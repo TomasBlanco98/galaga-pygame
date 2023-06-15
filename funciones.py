@@ -5,6 +5,7 @@ from personaje import Personaje
 from enemigo import EnemigoUno
 from enemigo_dos import EnemigoDos
 from constantes import *
+from base_datos import obtener_puntajes_bd
 
 def dibujar_vida(pantalla, x, y, vidas):
     largo = 80
@@ -111,3 +112,35 @@ def eventos_nivel(lista_eventos, flag_correr, timer_uno, lista_naves_enemigas,
                 nave.disparar(lista_balas)
                 sonido_disparo.play()
     return flag_correr, segundos
+
+def galaxia_menu(pantalla, flag_correr, imagen_jugar, rect_boton, imagen_puntaje, rect_boton_puntos, 
+                lista_eventos, ingreso_rect, font_input, ingreso, jugando):
+    pantalla.blit(imagen_jugar, rect_boton)
+    pantalla.blit(imagen_puntaje, rect_boton_puntos)
+    pygame.display.flip()
+
+    flag_correr, jugando, ingreso = eventos_inicio(lista_eventos, rect_boton, rect_boton_puntos, 
+                                                    ingreso, flag_correr, jugando)
+    
+    pygame.draw.rect(pantalla, colores.BLACK, ingreso_rect, 2)
+    font_input_surface = font_input.render(ingreso, True, colores.BLACK)
+    pantalla.blit(font_input_surface,(ingreso_rect.x+5, ingreso_rect.y+5))
+
+    return flag_correr, ingreso, jugando
+
+def galaxia_scores(pantalla, imagen_volver, rect_boton_volver, lista_eventos,
+                   flag_correr, jugando):
+    pantalla.blit(imagen_volver, rect_boton_volver)
+
+    flag_correr, jugando = eventos_score(lista_eventos, flag_correr, rect_boton_volver, jugando)
+    
+    # Mostrar titulos
+    mostrar_texto(24, "NOMBRE", colores.BLACK, pantalla, LEFT_TEXTO, TOP_TEXTO-25)
+    mostrar_texto(24, "PUNTAJE", colores.BLACK, pantalla, LEFT_TEXTO*2, TOP_TEXTO-25)
+
+    puntaje = obtener_puntajes_bd()
+    # Mostrar nombres y puntajes
+    for i in range(len(puntaje)):
+        mostrar_texto(24, puntaje[i][1], colores.BLACK, pantalla, LEFT_TEXTO, TOP_TEXTO+(i*25))
+        mostrar_texto(24, str(puntaje[i][2]), colores.BLACK, pantalla, LEFT_TEXTO*2, TOP_TEXTO+(i*25))
+    return flag_correr, jugando
