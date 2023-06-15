@@ -63,7 +63,7 @@ ingreso_rect = pygame.Rect(220, 400, 150, 40)
 pygame.mixer.init()
 sonido_fondo = crear_sonido("audio/fondo.mp3", 0.1)
 sonido_disparo_enemigo = crear_sonido("audio/enemigo.mp3", 0.7)
-sonido_explosion = crear_sonido("audio/explosion.mp3", 0.7)
+sonido_explosion = crear_sonido("audio/explosion.mp3", 0.8)
 sonido_disparo = crear_sonido("audio/nave.mp3", 0.7)
 
 sonido_fondo.play(-1)
@@ -112,18 +112,14 @@ while flag_correr:
             if evento.type == pygame.QUIT:
                 flag_correr = False
         
-        font_titulo_nombre = pygame.font.SysFont("Arial", 24)
-        texto_titulo_nombre = font_titulo_nombre.render("NOMBRE", True, colores.BLACK)
-        pantalla.blit(texto_titulo_nombre, (LEFT_TEXTO+15, TOP_TEXTO-25))
+        # Mostrar titulos
+        mostrar_texto(24, "NOMBRE", colores.BLACK, pantalla, LEFT_TEXTO, TOP_TEXTO-25)
+        mostrar_texto(24, "PUNTAJE", colores.BLACK, pantalla, LEFT_TEXTO*2, TOP_TEXTO-25)
 
-        font_titulo_puntaje = pygame.font.SysFont("Arial", 24)
-        texto_titulo_puntaje = font_titulo_puntaje.render("PUNTAJE", True, colores.BLACK)
-        pantalla.blit(texto_titulo_puntaje, ((LEFT_TEXTO+170), TOP_TEXTO-25))
         puntaje = obtener_puntajes_bd()
-
+        # Mostrar nombres y puntajes
         for i in range(len(puntaje)):
             mostrar_texto(24, puntaje[i][1], colores.BLACK, pantalla, LEFT_TEXTO, TOP_TEXTO+(i*25))
-
             mostrar_texto(24, str(puntaje[i][2]), colores.BLACK, pantalla, LEFT_TEXTO*2, TOP_TEXTO+(i*25))
         
     elif JUGANDO == 1:
@@ -137,7 +133,7 @@ while flag_correr:
             if evento.type == pygame.USEREVENT + 1:
                 if evento.type == timer_segundos:
                     for nave_enemiga in lista_naves_enemigas:
-                        if (nave_enemiga.rect.y <= 600 and nave_enemiga.rect.y >= 0) and random.random() < 0.7:
+                        if (nave_enemiga.rect.y <= ALTO_VENTANA and nave_enemiga.rect.y >= 0) and random.random() < 0.7:
                             nave_enemiga.disparar(lista_balas_enemigas)
                             sonido_disparo_enemigo.play()
                     SEGUNDOS -= 1
@@ -172,12 +168,11 @@ while flag_correr:
             lista_naves_enemigas = crear_lista_naves_enemigas(acumulador_enemigos_dos, "destructor")
             bandera_enemigo_dos = False
 
+        # Puntaje
         mostrar_texto(20, "SCORE: {0}".format(score), colores.WHITESMOKE, pantalla, 10, 10)
-
-        # BARRA DE SALUD
+        # Barra de vida
         dibujar_vida(pantalla, 5, 580, nave.vida)
-
-        # TIEMPO
+        # Tiempo
         mostrar_texto(20, "Tiempo: {0}".format(SEGUNDOS), colores.WHITESMOKE, pantalla, 100, 575)
 
         if len(lista_naves_enemigas) == 0 and bandera_enemigo_dos == False:
@@ -193,7 +188,6 @@ while flag_correr:
             eliminar_personajes()
             JUGANDO = 0
             SEGUNDOS = 200
-            # REINICIAR VALORES (ESTO DEBERÍA IR CUANDO EL JUGADOR PRESIONA Y ELIMINAR LO QUE ESTABA AFUERA)
             reiniciar_listas(lista_naves_enemigas, lista_balas, lista_balas_enemigas)
             acumulador_enemigos_uno, acumulador_enemigos_dos, nave, bandera_enemigo_dos = reiniciar_valores(
                                                                                     acumulador_enemigos_uno, 

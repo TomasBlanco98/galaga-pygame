@@ -1,5 +1,5 @@
 import pygame
-from bala import Balas
+from bala import BalaUsuario
 from constantes import *
 
 class Personaje:
@@ -28,10 +28,10 @@ class Personaje:
 
     def disparar(self, lista_balas):
         if self.disparo == "izquierda":
-            bala = Balas(self.rect.centerx - 28, self.rect.top + 33)
+            bala = BalaUsuario(self.rect.centerx - 28, self.rect.top + 33)
             self.disparo = "derecha"
         else:
-            bala = Balas(self.rect.centerx + 28, self.rect.top + 33)
+            bala = BalaUsuario(self.rect.centerx + 28, self.rect.top + 33)
             self.disparo = "izquierda"
         lista_balas.append(bala)
         self.contador_balas += 1

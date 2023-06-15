@@ -1,7 +1,7 @@
 import pygame
 import colores
 from personaje import Personaje
-from enemigo import Enemigo
+from enemigo import EnemigoUno
 from enemigo_dos import EnemigoDos
 from constantes import *
 
@@ -41,7 +41,7 @@ def crear_lista_naves_enemigas(cantidad, tipo):
     lista = []
     for i in range(cantidad):
         if tipo == "tie":
-            nave_enemiga = Enemigo()
+            nave_enemiga = EnemigoUno()
         elif tipo == "destructor":
             nave_enemiga = EnemigoDos()
         lista.append(nave_enemiga)
