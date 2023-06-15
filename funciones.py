@@ -1,5 +1,6 @@
 import pygame
 import colores
+import random
 from personaje import Personaje
 from enemigo import EnemigoUno
 from enemigo_dos import EnemigoDos
@@ -57,3 +58,56 @@ def mostrar_texto(escala, texto, color, pantalla, left, top):
     texto = font.render(texto, True, color)
     pantalla.blit(texto, (left, top))
 
+def eventos_inicio(lista_eventos, rect_boton, rect_boton_puntos, ingreso, flag_correr, jugando):
+    for evento in lista_eventos:
+        if evento.type == pygame.QUIT:
+            flag_correr = False
+        if evento.type == pygame.MOUSEBUTTONDOWN:
+            lista_click = list(evento.pos)
+            if(lista_click[0] > rect_boton[0] and lista_click[0] < (rect_boton[0] + rect_boton[2])):
+                if(lista_click[1] > rect_boton[1] and lista_click[1] < (rect_boton[1] + rect_boton[3])):
+                    jugando = 1
+            if(lista_click[0] > rect_boton_puntos[0] and lista_click[0] < (rect_boton_puntos[0] + rect_boton_puntos[2])):
+                if(lista_click[1] > rect_boton_puntos[1] and lista_click[1] < (rect_boton_puntos[1] + rect_boton_puntos[3])):
+                    jugando = 2
+
+        if evento.type == pygame.KEYDOWN:
+            if evento.key == pygame.K_BACKSPACE:
+                ingreso = ingreso[0:-1]
+            else:
+                ingreso += evento.unicode
+    return flag_correr, jugando, ingreso
+
+def eventos_score(lista_eventos, flag_correr, rect_boton_volver, jugando):
+    for evento in lista_eventos:
+        if evento.type == pygame.QUIT:
+                flag_correr = False
+        if evento.type == pygame.MOUSEBUTTONDOWN:
+            lista_click = list(evento.pos)
+            if(lista_click[0] > rect_boton_volver[0] and lista_click[0] < (rect_boton_volver[0] + rect_boton_volver[2])):
+                if(lista_click[1] > rect_boton_volver[1] and lista_click[1] < (rect_boton_volver[1] + rect_boton_volver[3])):
+                    jugando = 0
+    return flag_correr, jugando
+
+def eventos_nivel(lista_eventos, flag_correr, timer_uno, lista_naves_enemigas, 
+                  timer_segundos, lista_balas_enemigas, sonido_disparo_enemigo,
+                  nave, lista_balas, sonido_disparo, segundos):
+    for evento in lista_eventos:
+        if evento.type == pygame.QUIT:
+            flag_correr = False
+        if evento.type == pygame.USEREVENT:
+            if evento.type == timer_uno:
+                for nave_enemiga in lista_naves_enemigas:
+                    nave_enemiga.actualizar()
+        if evento.type == pygame.USEREVENT + 1:
+            if evento.type == timer_segundos:
+                for nave_enemiga in lista_naves_enemigas:
+                    if (nave_enemiga.rect.y <= ALTO_VENTANA and nave_enemiga.rect.y >= 0) and random.random() < 0.7:
+                        nave_enemiga.disparar(lista_balas_enemigas)
+                        sonido_disparo_enemigo.play()
+                segundos -= 1
+        if evento.type == pygame.KEYDOWN:
+            if evento.key == pygame.K_SPACE:
+                nave.disparar(lista_balas)
+                sonido_disparo.play()
+    return flag_correr, segundos

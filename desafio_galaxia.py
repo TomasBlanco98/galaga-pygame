@@ -1,6 +1,5 @@
 import pygame
 import colores
-import random
 from constantes import *
 from personaje import Personaje
 from funciones import dibujar_vida
@@ -11,6 +10,9 @@ from funciones import reiniciar_listas
 from funciones import crear_lista_naves_enemigas
 from funciones import crear_sonido
 from funciones import mostrar_texto
+from funciones import eventos_inicio
+from funciones import eventos_score
+from funciones import eventos_nivel
 from base_datos import *
 
 pygame.init()
@@ -78,23 +80,8 @@ while flag_correr:
         pantalla.blit(imagen_puntaje, rect_boton_puntos)
         pygame.display.flip()
 
-        for evento in lista_eventos:
-            if evento.type == pygame.QUIT:
-                flag_correr = False
-            if evento.type == pygame.MOUSEBUTTONDOWN:
-                lista_click = list(evento.pos)
-                if(lista_click[0] > rect_boton[0] and lista_click[0] < (rect_boton[0] + rect_boton[2])):
-                    if(lista_click[1] > rect_boton[1] and lista_click[1] < (rect_boton[1] + rect_boton[3])):
-                        JUGANDO = 1
-                if(lista_click[0] > rect_boton_puntos[0] and lista_click[0] < (rect_boton_puntos[0] + rect_boton_puntos[2])):
-                    if(lista_click[1] > rect_boton_puntos[1] and lista_click[1] < (rect_boton_puntos[1] + rect_boton_puntos[3])):
-                        JUGANDO = 2
-
-            if evento.type == pygame.KEYDOWN:
-                if evento.key == pygame.K_BACKSPACE:
-                    ingreso = ingreso[0:-1]
-                else:
-                    ingreso += evento.unicode
+        flag_correr, JUGANDO, ingreso = eventos_inicio(lista_eventos, rect_boton, rect_boton_puntos, 
+                                                       ingreso, flag_correr, JUGANDO)
         
         pygame.draw.rect(pantalla, colores.BLACK, ingreso_rect, 2)
         font_input_surface = font_input.render(ingreso, True, colores.BLACK)
@@ -103,14 +90,7 @@ while flag_correr:
     elif JUGANDO == 2:
         pantalla.blit(imagen_volver, rect_boton_volver)
 
-        if evento.type == pygame.MOUSEBUTTONDOWN:
-            lista_click = list(evento.pos)
-            if(lista_click[0] > rect_boton_volver[0] and lista_click[0] < (rect_boton_volver[0] + rect_boton_volver[2])):
-                if(lista_click[1] > rect_boton_volver[1] and lista_click[1] < (rect_boton_volver[1] + rect_boton_volver[3])):
-                    JUGANDO = 0
-        for evento in lista_eventos:
-            if evento.type == pygame.QUIT:
-                flag_correr = False
+        flag_correr, JUGANDO = eventos_score(lista_eventos, flag_correr, rect_boton_volver, JUGANDO)
         
         # Mostrar titulos
         mostrar_texto(24, "NOMBRE", colores.BLACK, pantalla, LEFT_TEXTO, TOP_TEXTO-25)
@@ -123,24 +103,9 @@ while flag_correr:
             mostrar_texto(24, str(puntaje[i][2]), colores.BLACK, pantalla, LEFT_TEXTO*2, TOP_TEXTO+(i*25))
         
     elif JUGANDO == 1:
-        for evento in lista_eventos:
-            if evento.type == pygame.QUIT:
-                flag_correr = False
-            if evento.type == pygame.USEREVENT:
-                if evento.type == timer_uno:
-                    for nave_enemiga in lista_naves_enemigas:
-                        nave_enemiga.actualizar()
-            if evento.type == pygame.USEREVENT + 1:
-                if evento.type == timer_segundos:
-                    for nave_enemiga in lista_naves_enemigas:
-                        if (nave_enemiga.rect.y <= ALTO_VENTANA and nave_enemiga.rect.y >= 0) and random.random() < 0.7:
-                            nave_enemiga.disparar(lista_balas_enemigas)
-                            sonido_disparo_enemigo.play()
-                    SEGUNDOS -= 1
-            if evento.type == pygame.KEYDOWN:
-                if evento.key == pygame.K_SPACE:
-                    nave.disparar(lista_balas)
-                    sonido_disparo.play()
+        flag_correr, SEGUNDOS = eventos_nivel(lista_eventos, flag_correr, timer_uno, lista_naves_enemigas, timer_segundos, 
+                                              lista_balas_enemigas,sonido_disparo_enemigo, nave, lista_balas, 
+                                              sonido_disparo, SEGUNDOS)
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_RIGHT]:
