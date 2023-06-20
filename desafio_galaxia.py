@@ -114,13 +114,6 @@ while flag_correr:
             lista_naves_enemigas = crear_lista_naves_enemigas(acumulador_enemigos_dos, "destructor")
             bandera_enemigo_dos = False
 
-        # Puntaje
-        mostrar_texto(20, "SCORE: {0}".format(score), colores.WHITESMOKE, pantalla, 10, 10)
-        # Barra de vida
-        dibujar_vida(pantalla, 5, 580, nave.vida)
-        # Tiempo
-        mostrar_texto(20, "Tiempo: {0}".format(SEGUNDOS), colores.WHITESMOKE, pantalla, 100, 575)
-
         if len(lista_naves_enemigas) == 0 and bandera_enemigo_dos == False:
             if acumulador_enemigos_uno <= CANTIDAD_MAX_ENEMIGOS_UNO:
                 acumulador_enemigos_uno += 1
@@ -142,6 +135,14 @@ while flag_correr:
                                                                                     bandera_enemigo_dos
                                                                                     )
             lista_naves_enemigas = crear_lista_naves_enemigas(acumulador_enemigos_uno, "tie")
+
+        # Puntaje
+        mostrar_texto(20, "SCORE: {0}".format(score), colores.WHITESMOKE, pantalla, 10, 10)
+        # Barra de vida
+        dibujar_vida(pantalla, 5, 580, nave.vida)
+        # Tiempo
+        mostrar_texto(20, "Tiempo: {0}".format(SEGUNDOS), colores.WHITESMOKE, pantalla, 100, 575)
+
     pygame.display.flip()
 
 pygame.quit()
