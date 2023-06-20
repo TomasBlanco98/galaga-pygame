@@ -141,6 +141,7 @@ def galaxia_scores(pantalla, imagen_volver, rect_boton_volver, lista_eventos,
     puntaje = obtener_puntajes_bd()
     # Mostrar nombres y puntajes
     for i in range(len(puntaje)):
+        mostrar_texto(24, str(i+1), colores.BLACK, pantalla, LEFT_TEXTO/2, TOP_TEXTO+(i*25))
         mostrar_texto(24, puntaje[i][1], colores.BLACK, pantalla, LEFT_TEXTO, TOP_TEXTO+(i*25))
         mostrar_texto(24, str(puntaje[i][2]), colores.BLACK, pantalla, LEFT_TEXTO*2, TOP_TEXTO+(i*25))
     return flag_correr, jugando
